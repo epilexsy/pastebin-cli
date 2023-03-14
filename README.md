@@ -11,10 +11,53 @@ Setup:
  - set `api_user_name` to your pastebin account's Username.
  - set `api_user_password` to your pastebin account's Password (optional, asks for password input by default before post request)
 
+# Example usage:
+Create a paste:
+```bash
+python .\pastebin.py --new-paste --title "Rotating donut C code" --file "donut.c" --format c --expires 1Y --unlisted
+```
+```
+accusername
+Enter pastebin password: ****************
+[*] (accusername) Pastebin credentials Authenticated.
+[*] New paste information:
+[*]     -> Paste title: "Rotating donut C code"
+[*]     -> File used: "donut.c"
+[*]     -> File formatting: c
+[*]     -> Privacy status: unlisted
+[*]     -> Expires in: 1Y
+[*]     -> 2023-03-14 16:41:07.555198
+[*] Paste created: "https://pastebin.com/pK3bHVxY"
+[*] Link copied!
+```
+
+List pastes:
+```bash
+python .\pastebin.py --list-pastes
+```
+```
+accusername
+Enter pastebin password: ****************
+[*] (accusername) Pastebin credentials Authenticated.
+
+[1] pK3bHVxY |unlisted| -> 2023-03-14 11:11 -- "Rotating donut C code"
+```
+
+Delete a paste:
+```bash
+python .\pastebin.py --remove-paste "pK3bHVxY"
+```
+```
+accusername
+Enter pastebin password: ****************
+[*] (accusername) Pastebin credentials Authenticated.
+[*] Paste Removed
+```
+
 # Arguments
 
 ```
-python ./pastebin.py --help
+python .\pastebin.py --help
 ```
 ```
 usage: pastebin.py [-h] [-np] [-unl] [-pub] [-priv] [-t TITLE] [-f FILE] [-F FORMAT] [-e EXPIRES] [-lp] [--filter FILTER] [-v VALUE] [-rp REMOVE_PASTE]
