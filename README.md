@@ -1,6 +1,5 @@
 # py-pastebin-cli
-
-Using `argparse` and `requests` to interact with Pastebin API.
+Using `argparse` and `requests` to interact with [Pastebin API](https://pastebin.com/doc_api).
 
 Functionality:
  - Create paste
