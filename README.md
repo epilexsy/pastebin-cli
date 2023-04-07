@@ -6,6 +6,11 @@ Functionality:
  - Remove paste
  - List pastes
 
+Requirements:
+(you could remove their usage entirely)
+ - maskpass (masked password input)
+ - pyperclip (copy generated link)
+
 Setup:
  - set `API_KEY` to your pastebin account's API Developer key.
  - set `api_user_name` to your pastebin account's Username.
