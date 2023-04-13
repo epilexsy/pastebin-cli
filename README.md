@@ -7,7 +7,7 @@ Functionality:
  - Remove paste
  - List pastes
 
-Requirements:
+External requirements:
 (you could remove their usage entirely)
  - maskpass (masked password input)
  - pyperclip (copy generated link)
