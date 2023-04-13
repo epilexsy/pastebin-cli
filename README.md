@@ -1,4 +1,5 @@
 # py-pastebin-cli
+(unpolished) <br>
 Using `argparse` and `requests` to interact with [Pastebin API](https://pastebin.com/doc_api).
 
 Functionality:
