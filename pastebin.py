@@ -103,7 +103,7 @@ def delete_paste(paste_id):
     return response._content.decode()
 
 def create_paste(title, data, paste_format='text', privacy_status='public', expires='N'):
-    privacy_status_codes = {'public':0, 'unlisted':1, 'privacy':2}
+    privacy_status_codes = {'public':0, 'unlisted':1, 'private':2}
     privacy_status = privacy_status_codes[privacy_status]
     data_ = {
         'api_dev_key':API_KEY,
@@ -120,7 +120,7 @@ def create_paste(title, data, paste_format='text', privacy_status='public', expi
     return response._content.decode()
 
 def create_paste_from_file(dir_, title, paste_format='text', privacy_status='public', expires='N'):
-    with open(dir_, 'r') as f:
+    with open(dir_, 'rb') as f:
         data = f.read()
         f.close()
     return create_paste(title, data, paste_format, privacy_status, expires)
@@ -144,7 +144,7 @@ parser.add_argument('-v', '--value', help='Filter parameter expected value', def
 parser.add_argument('-rp', '--remove-paste', help='Paste ID to remove', default=None)
 args = parser.parse_args()
 
-if api_user_password:
+if not api_user_password:
     api_user_password = askpass(prompt=f'{api_user_name}\nEnter pastebin password: ', mask='*')
 api_user_key = authenticate_obtain_user_key()
 
@@ -166,7 +166,6 @@ if args.new_paste:
     else:
         privacy_status = 'private'
 
-    
     paste_url = create_paste_from_file(args.file, args.title, args.format, privacy_status, args.expires)
     print(f'\nPaste created! Link: "{paste_url}"\n')
     print(f'{datetime.now()}')
