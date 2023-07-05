@@ -9,6 +9,8 @@ from datetime import datetime
 API_KEY = "" 
 # Your account's Username.
 api_user_name = "" 
+# Your account's Password. (If left blank will prompt for password upon running.)
+api_user_password = ""
 
 parser = argparse.ArgumentParser()
 LOGIN_URL = 'https://pastebin.com/api/api_login.php'
@@ -142,7 +144,8 @@ parser.add_argument('-v', '--value', help='Filter parameter expected value', def
 parser.add_argument('-rp', '--remove-paste', help='Paste ID to remove', default=None)
 args = parser.parse_args()
 
-api_user_password = askpass(prompt=f'{api_user_name}\nEnter pastebin password: ', mask='*')
+if api_user_password:
+    api_user_password = askpass(prompt=f'{api_user_name}\nEnter pastebin password: ', mask='*')
 api_user_key = authenticate_obtain_user_key()
 
 if args.new_paste:
