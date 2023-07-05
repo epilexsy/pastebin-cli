@@ -1,18 +1,19 @@
 import requests
 import re
 import argparse
-import pyperclip
+from pyperclip import copy
 from maskpass import askpass
 from datetime import datetime
 
-parser = argparse.ArgumentParser()
+# Your account's API Development key.
+API_KEY = "" 
+# Your account's Username.
+api_user_name = "" 
 
+parser = argparse.ArgumentParser()
 LOGIN_URL = 'https://pastebin.com/api/api_login.php'
 POST_URL = 'https://pastebin.com/api/api_post.php'
-
-API_KEY = "" # Your account API Development key
-api_user_name = "" # Your account Username
-api_user_key = None # Will be set when user is authenticated
+api_user_key = None
 
 def authenticate_obtain_user_key():
     data = {
@@ -22,7 +23,6 @@ def authenticate_obtain_user_key():
     }
     
     response = requests.post(url = LOGIN_URL, data = data)
-    print(f'[*] ({api_user_name})', end=' ')
     if response.status_code == 200:
         print('Pastebin credentials Authenticated.')
         api_user_key = response._content.decode()
@@ -56,7 +56,7 @@ def get_paste_list():
         'title': match[2] or 'Untitled',
         'size': match[3],
         'expire_date': datetime.utcfromtimestamp(int(match[4])).strftime('%Y-%m-%d %H:%M'),
-        'private': match[5],
+        'privacy': match[5],
         'format': match[7],
         'url': match[8],
         'hits': match[9],
@@ -65,18 +65,31 @@ def get_paste_list():
     return pastes
 
 def get_pastes(filter_param='title', filter_value=None):
+    convert_privacy_codes = {'public':'0', 'unlisted':'1', 'private':'2'}
+    if filter_param == 'privacy' and filter_value in convert_privacy_codes:
+        filter_value = convert_privacy_codes[filter_value]
     pastes = get_paste_list()
     filtered = {}
-    for paste_id in pastes:
-        if filter_param and filter_value and pastes[paste_id][filter_param] == filter_value:
-            filtered[paste_id] = pastes[paste_id]
-            continue
-        elif filter_param and filter_value and pastes[paste_id][filter_param] != filter_value:
-            continue
-        filtered[paste_id] = pastes[paste_id]
+    try:
+        for paste_id in pastes:
+            if filter_param and filter_value:
+                try:
+                    if ((filter_value.isalnum() or filter_value.isalpha() or (filter_param in ['title', 'date', 'expire-date'])) and filter_value in pastes[paste_id][filter_param]) \
+                        or (filter_value.isnumeric() and int(pastes[paste_id][filter_param])) >= int(filter_value):
+                        filtered[paste_id] = pastes[paste_id]
+                except ValueError:
+                    pass
+
+            else:
+                filtered[paste_id] = pastes[paste_id]
+    except Exception as e:
+        print(f'Exception: {e}')
     return filtered
 
 def delete_paste(paste_id):
+    if 'pastebin.com' in paste_id:
+        paste_id = paste_id.split('/')[3]
+
     data = {
         'api_dev_key':API_KEY,
         'api_user_key':api_user_key,
@@ -88,7 +101,7 @@ def delete_paste(paste_id):
     return response._content.decode()
 
 def create_paste(title, data, paste_format='text', privacy_status='public', expires='N'):
-    privacy_status_codes = {'public':0, 'unlisted':1, 'private':2}
+    privacy_status_codes = {'public':0, 'unlisted':1, 'privacy':2}
     privacy_status = privacy_status_codes[privacy_status]
     data_ = {
         'api_dev_key':API_KEY,
@@ -110,8 +123,6 @@ def create_paste_from_file(dir_, title, paste_format='text', privacy_status='pub
         f.close()
     return create_paste(title, data, paste_format, privacy_status, expires)
 
-# ARGPARSE IT
-
 # Create paste
 parser.add_argument('-np', '--new-paste', help='Create new paste.', action='store_true', default=False)
 parser.add_argument('-unl', '--unlisted', help='Set privacy status of new paste as "unlisted".', default=False, action='store_true')
@@ -124,7 +135,7 @@ parser.add_argument('-e', '--expires', help='Set an expiry date for paste (N, 10
 
 # Get paste list
 parser.add_argument('-lp', '--list-pastes', help='List all user pastes.', default=False, action='store_true')
-parser.add_argument('--filter', help='Filter parameter', default='title')
+parser.add_argument('--filter', help='Filter parameter', default='title', choices=['title', 'date', 'size', 'expire_date', 'privacy', 'format', 'url', 'hits'])
 parser.add_argument('-v', '--value', help='Filter parameter expected value', default=None)
 
 # Remove paste
@@ -138,10 +149,10 @@ if args.new_paste:
     if not args.unlisted and not args.public and not args.private:
         args.public = True
     if not args.file:
-        print('[*] No file provided.')
+        print('No file provided.')
         exit()
     elif not args.title:
-        print('[*] No title for paste provided.')
+        print('No title for paste provided.')
         exit()
 
     privacy_status = None
@@ -154,27 +165,33 @@ if args.new_paste:
 
     
     paste_url = create_paste_from_file(args.file, args.title, args.format, privacy_status, args.expires)
-    pyperclip.copy(paste_url)
-    print(f'[*] New paste information:')
-    print(f'[*]     -> Paste title: "{args.title}"')
-    print(f'[*]     -> File used: "{args.file}"')
-    print(f'[*]     -> File formatting: {args.format}')
-    print(f'[*]     -> Privacy status: {privacy_status}')
-    print(f'[*]     -> Expires in: {args.expires}')
-    print(f'[*]     -> {datetime.now()}')
-    print(f'[*] Paste created: "{paste_url}"')
-    print(f'[*] Link copied!')
+    print(f'\nPaste created! Link: "{paste_url}"\n')
+    print(f'{datetime.now()}')
+    print(f'Paste title:    "{args.title}"')
+    print(f'File used:      "{args.file}"')
+    print(f'File formatting: {args.format}')
+    print(f'Privacy status:  {privacy_status}')
+    print(f'Expires in:      {args.expires}')
+    try:
+        pyperclip.copy(paste_url)
+        print(f'\nLink copied!')
+    except:
+        pass
+    print()
 
 elif args.list_pastes:
-    privacy_status = {'0':'public  ', '1':'unlisted', '2':'private '}
+    privacy_status = {'0':'public', '1':'unlisted', '2':'private'}
     paste_dump = get_pastes(args.filter, args.value)
-    if args.filter != 'title' and args.value:
-        print(f'    FILTERED BY ("{args.filter}" = {args.value})') 
-    else:
-        print()
+    print()
+    if args.filter and args.value:
+        print(f'Filter: {args.filter} by Value: {args.value}') 
+
+    nmax = len(str(len(paste_dump)))
     for n, paste_id in enumerate(paste_dump):
-        print(f'[{n+1}] {paste_id} |{privacy_status[paste_dump[paste_id]["private"]]}| -> {paste_dump[paste_id]["date"]} -- "{paste_dump[paste_id]["title"]}"')
+        print(f'{n+1}.'+' '*(nmax-len(str(n+1)))+f' {paste_dump[paste_id]["date"]} - ({paste_id}) {paste_dump[paste_id]["title"]} [{privacy_status[paste_dump[paste_id]["privacy"]]}]')
     print()
 
 elif args.remove_paste:
-    print('[*] '+delete_paste(args.remove_paste))
+    print()
+    print(delete_paste(args.remove_paste))
+    print()
