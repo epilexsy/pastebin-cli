@@ -9,8 +9,8 @@ Functionality:
 
 External requirements:
 (you could remove their usage entirely)
- - maskpass (masked password input)
- - pyperclip (copy generated link)
+ - `maskpass` (masked password input)
+ - `pyperclip` (copy generated link)
 
 Setup:
  - set `API_KEY` to your pastebin account's API Developer key.
