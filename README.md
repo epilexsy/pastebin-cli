@@ -15,7 +15,7 @@ External requirements:
 Setup:
  - set `API_KEY` to your pastebin account's API Developer key.
  - set `api_user_name` to your pastebin account's Username.
- - set `api_user_password` to your pastebin account's Password (optional, asks for password input by default before post request)
+ - set `api_user_password` to your pastebin account's Password (optional, asks for password input by default upon running.)
 
 # Example usage:
 Create a paste:
