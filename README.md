@@ -25,16 +25,19 @@ python .\pastebin.py --new-paste --title "Rotating donut C code" --file "donut.c
 ```
 accusername
 Enter pastebin password: ****************
-[*] (accusername) Pastebin credentials Authenticated.
-[*] New paste information:
-[*]     -> Paste title: "Rotating donut C code"
-[*]     -> File used: "donut.c"
-[*]     -> File formatting: c
-[*]     -> Privacy status: unlisted
-[*]     -> Expires in: 1Y
-[*]     -> 2023-03-14 16:41:07.555198
-[*] Paste created: "https://pastebin.com/pK3bHVxY"
-[*] Link copied!
+Pastebin credentials Authenticated.
+
+Paste created! Link: "https://pastebin.com/pK3bHVxY"
+
+2023-03-14 11:11
+Paste title: "Rotating donut C code"
+File used: ".\donut.c"
+File formatting: c
+Privacy status: unlisted
+Expires in: 1Y
+
+Link copied!
+
 ```
 
 List pastes:
@@ -44,9 +47,9 @@ python .\pastebin.py --list-pastes
 ```
 accusername
 Enter pastebin password: ****************
-[*] (accusername) Pastebin credentials Authenticated.
+Pastebin credentials Authenticated.
 
-[1] pK3bHVxY |unlisted| -> 2023-03-14 11:11 -- "Rotating donut C code"
+1. 2023-03-14 11:11 - (pK3bHVxY) Rotating donut C code [unlisted]
 ```
 
 Delete a paste:
@@ -56,8 +59,10 @@ python .\pastebin.py --remove-paste "pK3bHVxY"
 ```
 accusername
 Enter pastebin password: ****************
-[*] (accusername) Pastebin credentials Authenticated.
-[*] Paste Removed
+Pastebin credentials Authenticated.
+
+Paste Removed
+
 ```
 
 # Arguments
@@ -66,9 +71,12 @@ Enter pastebin password: ****************
 python .\pastebin.py --help
 ```
 ```
-usage: pastebin.py [-h] [-np] [-unl] [-pub] [-priv] [-t TITLE] [-f FILE] [-F FORMAT] [-e EXPIRES] [-lp] [--filter FILTER] [-v VALUE] [-rp REMOVE_PASTE]
+usage: pastebin.py [-h] [-np] [-unl] [-pub] [-priv] [-t TITLE] [-f FILE] [-F FORMAT]
+                   [-e EXPIRES] [-lp]
+                   [--filter {title,date,size,expire_date,privacy,format,url,hits}]
+                   [-v VALUE] [-rp REMOVE_PASTE]
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   -np, --new-paste      Create new paste.
   -unl, --unlisted      Set privacy status of new paste as "unlisted".
@@ -80,9 +88,10 @@ optional arguments:
   -F FORMAT, --format FORMAT
                         Syntax highlighting format (DEFAULT:"text").
   -e EXPIRES, --expires EXPIRES
-                        Set an expiry date for paste (N, 10M, 1H, 1D, 1W, 1Y) (DEFAULT:N)
+                        Set an expiry date for paste (N, 10M, 1H, 1D, 1W, 1Y) (DEFAULT:N)     
   -lp, --list-pastes    List all user pastes.
-  --filter FILTER       Filter parameter
+  --filter {title,date,size,expire_date,privacy,format,url,hits}
+                        Filter parameter
   -v VALUE, --value VALUE
                         Filter parameter expected value
   -rp REMOVE_PASTE, --remove-paste REMOVE_PASTE
