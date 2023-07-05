@@ -1,5 +1,5 @@
 # py-pastebin-cli
-(rough and unpolished) <br>
+<p color="gray">(rough and unpolished)</p>
 Using `argparse` and `requests` to interact with [Pastebin API](https://pastebin.com/doc_api).
 
 Functionality:
